@@ -7,15 +7,24 @@ import RepoList from './components/RepoList.jsx';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       repos: []
     }
 
   }
 
+  componentDidMount(){
+    this.props.getTop25()
+  }
+
   search (term) {
     console.log(`${term} was searched`);
     // TODO
+    $.post('http://localhost:1128/repos', {
+      username: term
+    })
+      .done((repos) => console.log(repos))
+      .fail((err) => console.log(err))
   }
 
   render () {
@@ -27,4 +36,15 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App getTop25 = {
+      ()=>{
+        $.get('http://localhost:1128/repos')
+          .done((repos) => {
+            console.log(repos)
+          })
+          .fail((err) => {
+            console.log(err)
+          })
+      }
+    }
+  />, document.getElementById('app'));
